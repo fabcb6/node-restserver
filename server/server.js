@@ -10,7 +10,8 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
  
-app.use(require('./routes/users'));
+// gloval rountes index
+app.use(require('./routes/index'));
 
 // Mongoose connection
 mongoose.connect(process.env.URLDB, (err) => {

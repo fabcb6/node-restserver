@@ -1,12 +1,13 @@
 const express = require('express');
 const User = require('../models/users');
+const { validateToken, validateAdminRole } = require('../middlewares/authentication');
 const bcrypt = require('bcrypt');
 const _ = require('underscore');
 
 const app = express();
 
 
-app.get('/usuario', (req, res) => {  // GET: Optener Datos
+app.get('/usuario', validateToken, (req, res) => {  // GET: Optener Datos
     let from = Number(req.query.from);
     from = Number.isInteger(from) ? from : 0;
     let limit = Number(req.query.limit);
@@ -34,7 +35,7 @@ app.get('/usuario', (req, res) => {  // GET: Optener Datos
     });
 })
 
-app.post('/usuario', (req, res) => {  // POST: Insertar Datos
+app.post('/usuario', [validateToken, validateAdminRole], (req, res) => {  // POST: Insertar Datos
     let body = req.body;
 
     let { name, email, password: password1, role } = body;
@@ -69,7 +70,7 @@ app.post('/usuario', (req, res) => {  // POST: Insertar Datos
 }) 
 
 // https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate 
-app.put('/usuario/:id', (req, res) => {  // PUT: Actualiza Datos igual que PATCH
+app.put('/usuario/:id', [validateToken, validateAdminRole], (req, res) => {  // PUT: Actualiza Datos igual que PATCH
     let id = req.params.id;
     let body = req.body;
 
@@ -89,7 +90,7 @@ app.put('/usuario/:id', (req, res) => {  // PUT: Actualiza Datos igual que PATCH
     });
 }) 
 
-app.delete('/usuario/:id', (req, res) => {  // DELETE: Borrado logico Datos
+app.delete('/usuario/:id', [validateToken, validateAdminRole], (req, res) => {  // DELETE: Borrado logico Datos
     let id = req.params.id;
 
     /*  remove a user in the DB */
